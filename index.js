@@ -67,3 +67,27 @@ function resetScore() {
     document.getElementById('score-o').innerText = scoreO;
     restartGame();
 }
+
+let isDragging = false;
+let offsetX, offsetY;
+
+const scoreContainer = document.querySelector('.score-container');
+
+scoreContainer.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    offsetX = e.clientX - scoreContainer.getBoundingClientRect().left;
+    offsetY = e.clientY - scoreContainer.getBoundingClientRect().top;
+});
+
+document.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+        scoreContainer.style.left = x + 'px';
+        scoreContainer.style.top = y + 'px';
+    }
+});
+
+document.addEventListener('mouseup', function() {
+    isDragging = false;
+});
