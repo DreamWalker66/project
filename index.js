@@ -73,21 +73,37 @@ let offsetX, offsetY;
 
 const scoreContainer = document.querySelector('.score-container');
 
-scoreContainer.addEventListener('mousedown', function(e) {
-    isDragging = true;
-    offsetX = e.clientX - scoreContainer.getBoundingClientRect().left;
-    offsetY = e.clientY - scoreContainer.getBoundingClientRect().top;
-});
+scoreContainer.addEventListener('mousedown', startDragging);
+scoreContainer.addEventListener('touchstart', startDragging);
 
-document.addEventListener('mousemove', function(e) {
+function startDragging(e) {
+    isDragging = true;
+    if (e.type === 'mousedown') {
+        offsetX = e.clientX - scoreContainer.getBoundingClientRect().left;
+        offsetY = e.clientY - scoreContainer.getBoundingClientRect().top;
+    } else if (e.type === 'touchstart' && e.touches.length === 1) {
+        const touch = e.touches[0];
+        offsetX = touch.clientX - scoreContainer.getBoundingClientRect().left;
+        offsetY = touch.clientY - scoreContainer.getBoundingClientRect().top;
+    }
+}
+
+document.addEventListener('mousemove', drag);
+document.addEventListener('touchmove', drag);
+
+function drag(e) {
     if (isDragging) {
+        e.preventDefault();
         const x = e.clientX - offsetX;
         const y = e.clientY - offsetY;
         scoreContainer.style.left = x + 'px';
         scoreContainer.style.top = y + 'px';
     }
-});
+}
 
-document.addEventListener('mouseup', function() {
+document.addEventListener('mouseup', stopDragging);
+document.addEventListener('touchend', stopDragging);
+
+function stopDragging() {
     isDragging = false;
-});
+}
